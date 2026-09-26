@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galeria kart MTG</title>
+  <style>
+
+    img{margin-top: 12px;}
+    .card:has(input:checked) { outline: 3px solid #245a85; }
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    .card {
+      width: 220px;
+      background: white;
+      padding: 5px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      position: relative;
+    }
+    .card img {
+      width: 223px;
+      height: 310px;
+      transition: transform 0.2s ease;
+    }
+    .card img:hover {
+      transform: scale(1.1);
+      z-index: 5;
+      position: relative;
+    }
+    .card-controls {
+      margin-bottom: 5px;
+    }
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+    }
+
+    .card-label {
+      font-size: 14px;
+      margin-top: 12px;
+    }
+    .card-price {
+      font-size: 13px;
+      margin-top: 4px;
+      color: #2f6f3e;
+      font-weight: 600;
+    }
+    button {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    input[type="number"] {
+      width: 40px;
+    }
+    textarea {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: 100px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Galeria kart MTG</h2>
+
+  <p><a href="fra_minigallery.html">Minigaleria Limited FRA</a> · <a href="#wanted">Lista zaznaczonych kart</a></p>
+  <div id="gallery" class="gallery"></div>
+
+  <h2 id="wanted">Lista zaznaczonych kart</h2>
+  <p>Zaznacz karty w galerii i podaj ilości, aby skopiować listę lub zapisać ją jako TXT. Zaznaczenia są zapisywane w przeglądarce i współdzielone z minigalerią Limited.</p>
+  <div class="controls">
+    <button onclick="generateList()">📝 Generuj listę zaznaczonych kart</button>
+    <button onclick="copyList()">📋 Skopiuj do schowka</button>
+    <button onclick="saveList()">💾 Zapisz jako TXT</button>
+    <button onclick="clearSelections()">❌ Wyczyść zaznaczenia</button>
+    <button onclick="selectAllCards()">✔️ Zaznacz wszystkie karty</button>
+    <button onclick="addSelectedToWanted()">Dodaj zaznaczone do poszukiwanych</button>
+    <p id="wantedFeedback" role="status"></p>
+    <a href="fra_minigallery.html#wanted">Przejdź do poszukiwanych kart</a>
+    <textarea id="outputList" placeholder="Tutaj pojawi się lista zaznaczonych kart..."></textarea>
+  </div>
+
+  <script src="wanted-store.js"></script>
+  <script>
+    let catalogCards = [];
+    const gallery = document.getElementById("gallery");
+    const outputList = document.getElementById("outputList");
+    const galleryName = "Galeria kart MTG – FRA + FRC";
+
+    const jsonFiles = [
+      "FRA_cards.json",
+      "FRC_cards.json"
+    ];
+
+    function rename(name) {
+headline = document.getElementsByTagName("h2")[0];
+headline.innerText = name;
+title = document.getElementsByTagName("title")[0];
+title.innerText = name;
+    }
+
+    Promise.all(jsonFiles.map(file =>
+      fetch(file).then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status} for ${file}`);
+        return res.json();
+      })
+    ))
+      .then(results => {
+const allCardsOrdered = results.map(cards => 
+  cards.sort((a, b) => {
+    const na = parseInt(a.collector_number);
+    const nb = parseInt(b.collector_number);
+    return isNaN(na) || isNaN(nb) ? 0 : na - nb;
+  })
+).flat();
+
+catalogCards = deduplicateAndSort(allCardsOrdered);
+displayGallery(catalogCards);
+generateList();
+
+      })
+      .catch(err => {
+        gallery.innerHTML = "<p style='color:red;'>Błąd wczytywania plików JSON</p>";
+        console.error(err);
+      });
+
+function deduplicateAndSort(cards) {
+  const seen = new Set();
+  return cards.filter(c => {
+    const key = `${c.name}_${c.collector_number}_${c.set}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function formatCardPrice(card) {
+  if (card.price_usd) return `$${card.price_usd}`;
+  if (card.price_usd_foil) return `$${card.price_usd_foil} (foil)`;
+  if (card.price_usd_etched) return `$${card.price_usd_etched} (etched)`;
+  return "";
+}
+
+    function displayGallery(cards) {
+      gallery.innerHTML = "";
+      cards.forEach(card => {
+        const id = `${card.name}__${card.collector_number}__${card.set}`;
+        const saved = JSON.parse(localStorage.getItem(id)) || { checked: false, qty: 1 };
+
+        const div = document.createElement("div");
+        div.className = "card";
+        div.dataset.id = id;
+
+        const controls = document.createElement("div");
+        controls.className = "card-controls";
+        controls.innerHTML = `
+  <input type="checkbox" ${saved.checked ? "checked" : ""} onclick="event.stopPropagation()">
+  <input type="number" min="1" value="${saved.qty}" onclick="event.stopPropagation()">
+`;
+
+
+
+        const img = document.createElement("img");
+        img.src = card.image_url;
+        img.alt = card.name;
+
+        const label = document.createElement("div");
+        label.className = "card-label";
+        label.innerHTML = `<strong>${card.name}</strong> (${card.collector_number || "?"}, ${card.set || "?"})`;
+
+        const priceValue = formatCardPrice(card);
+        const price = document.createElement("div");
+        price.className = "card-price";
+        price.textContent = priceValue ? `Price: ${priceValue}` : "";
+
+        div.appendChild(controls);
+        div.appendChild(img);
+        div.appendChild(label);
+        div.appendChild(price);
+        gallery.appendChild(div);
+
+        const checkbox = controls.querySelector("input[type='checkbox']");
+        const qty = controls.querySelector("input[type='number']");
+        checkbox.addEventListener("change", () => updateStorage(id, checkbox.checked, qty.value));
+        qty.addEventListener("change", () => { qty.value = Math.max(1, Math.floor(Number(qty.value) || 1)); updateStorage(id, checkbox.checked, qty.value); });
+
+div.addEventListener("click", (e) => {
+  if (e.target.tagName.toLowerCase() === "input") return;
+
+  const isChecked = checkbox.checked;
+  checkbox.checked = !isChecked;
+
+  updateStorage(id, checkbox.checked, qty.value);
+});
+        
+
+      });
+    }
+
+    function updateStorage(id, checked, qty) {
+      localStorage.setItem(id, JSON.stringify({ checked, qty: Math.max(1, Math.floor(Number(qty) || 1)) }));
+      generateList();
+    }
+
+    function getSelectedCards() {
+      return [...document.querySelectorAll(".card")]
+        .map(card => {
+          const name = card.querySelector("strong").innerText;
+          const checkbox = card.querySelector("input[type='checkbox']");
+          const qty = card.querySelector("input[type='number']");
+          return checkbox.checked ? `${qty.value} ${name}` : null;
+        })
+        .filter(Boolean);
+    }
+
+    function generateList() {
+      const list = getSelectedCards().join("\n");
+      outputList.value = list;
+    }
+
+    function addSelectedToWanted() {
+      const status = document.getElementById("wantedFeedback");
+      try {
+        const selected = catalogCards.flatMap(card => {
+          const saved = JSON.parse(localStorage.getItem(wantedStore.id(card))) || {};
+          return saved.checked ? [{ ...card, qty: saved.qty }] : [];
+        });
+        if (!selected.length) { status.textContent = "Najpierw zaznacz karty w galerii."; return; }
+        wantedStore.add(selected);
+        status.textContent = `Zapisano ${selected.length} pozycji w poszukiwanych. Ilości istniejących pozycji zostały zaktualizowane.`;
+      } catch (error) {
+        status.textContent = "Nie udało się zapisać poszukiwanych kart. Sprawdź dostęp do pamięci przeglądarki.";
+        console.error(error);
+      }
+    }
+
+    function copyList() {
+      generateList();
+      navigator.clipboard.writeText(outputList.value).then(() => alert("Skopiowano do schowka!"));
+    }
+
+    function saveList() {
+      generateList();
+      const blob = new Blob([outputList.value], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "lista_kart.txt";
+      link.click();
+    }
+
+    function clearSelections() {
+       if (confirm("Na pewno chcesz usunąć wszystkie zaznaczenia?")) {
+
+
+    document.querySelectorAll(".card").forEach(card => {
+      const checkbox = card.querySelector("input[type='checkbox']");
+      const qty = card.querySelector("input[type='number']");
+
+      checkbox.checked = false;
+      qty.value = 1;
+
+      const id = card.dataset.id;
+      localStorage.setItem(id, JSON.stringify({ checked: false, qty: 1 }));
+    });
+
+    outputList.value = ""; 
+  }}
+
+      function selectAllCards() {
+       if (confirm("Na pewno chcesz zaznaczyć wszystkie karty?")) {
+
+
+    document.querySelectorAll(".card").forEach(card => {
+      const checkbox = card.querySelector("input[type='checkbox']");
+      const qty = card.querySelector("input[type='number']");
+
+      checkbox.checked = true;
+      qty.value = 1;
+
+      const id = card.dataset.id;
+      localStorage.setItem(id, JSON.stringify({ checked: true, qty: 1 }));
+    });
+    generateList();
+
+  }}
+
+  window.addEventListener("storage", () => {
+    document.querySelectorAll(".card").forEach(card => {
+      const saved = JSON.parse(localStorage.getItem(card.dataset.id)) || {checked:false, qty:1};
+      card.querySelector("input[type=checkbox]").checked = saved.checked;
+      card.querySelector("input[type=number]").value = saved.qty;
+    });
+    generateList();
+  });
+
+  try {
+    rename(galleryName)
+  } catch (e) {
+    console.error("Błąd podczas zmiany nazwy:", e);
+  }
+  </script>
+
+</body>
+</html>
