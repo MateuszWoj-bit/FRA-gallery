@@ -1,0 +1,3527 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRA Limited - minigaleria priorytetów</title>
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --muted: #667085;
+      --line: #d9dde3;
+      --accent: #245a85;
+      --gold: #9a6a08;
+      --green: #226144;
+      --red: #8f2f2f;
+      --blue: #285c9e;
+      --black: #30323a;
+      --white: #8d731f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .sources { font-size: 12px; line-height: 1.5; }
+    details { margin-bottom: 18px; max-width: 980px; }
+    .card:has(input:checked) { outline: 3px solid var(--accent); }
+    input[type="search"] { min-height: 36px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; max-width: 100%; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      max-width: 980px;
+      line-height: 1.4;
+    }
+
+    .toolbar,
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    button,
+    select {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--ink);
+      min-height: 36px;
+      padding: 7px 10px;
+      font-size: 14px;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card-controls {
+      display: grid;
+      grid-template-columns: auto 52px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wanted-controls {
+      grid-template-columns: minmax(0, 1fr);
+      overflow-wrap: anywhere;
+    }
+
+    .wanted-controls button {
+      width: 100%;
+      min-width: 0;
+      white-space: normal;
+      color: var(--red);
+    }
+
+    input[type="number"] {
+      width: 52px;
+      min-height: 28px;
+    }
+
+    .card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 488 / 680;
+      object-fit: cover;
+      background: #eceff3;
+    }
+
+    .card-body {
+      padding: 10px;
+    }
+
+    .card-title {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.25;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      border-radius: 999px;
+      color: white;
+      font-size: 12px;
+      line-height: 1;
+      padding: 5px 7px;
+      white-space: nowrap;
+    }
+
+    .W { background: var(--white); }
+    .U { background: var(--blue); }
+    .B { background: var(--black); }
+    .R { background: var(--red); }
+    .G { background: var(--green); }
+    .Gold { background: var(--gold); }
+    .Colorless { background: #6d6f78; }
+
+    .purpose {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .value-row {
+      display: grid;
+      gap: 4px;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .value-row strong {
+      color: var(--ink);
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 110px;
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+    }
+
+    .missing {
+      margin: 16px 0;
+      border: 1px solid #d89a9a;
+      background: #fff1f1;
+      color: #7a2424;
+      border-radius: 8px;
+      padding: 10px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>FRA Limited - minigaleria priorytetów</h1>
+  <p class="subtitle">Wybór Sealed uzupełniony o notatki o dziesięciu archetypach. Według Coach Handout v1 i Sealed Guide 1.0 Pro PL z 24.09.2026. Rankingi są prognozą day zero, bez danych meczowych. Kategorie Top common/uncommon pochodzą z PDF; oceny S/A+/A dotyczą bomb. FRC pozostaje wyłącznie w katalogu poszukiwanych kart.</p>
+  <p><a href="Reality_Fracture_Sealed_Coach_Handout_v1_PL.pdf">Coach Handout v1 PL</a> · <a href="Reality_Fracture_Sealed_Guide_1_0_Pro_PL.pdf">Sealed Guide 1.0 Pro PL</a></p>
+  <details><summary>Jak czytać wybór i oceny?</summary><p>Domyślny widok obejmuje priorytety, karty wspierające archetypy, fixing, triki i sideboard z obu PDF-ów. Kategoria Build-around oznacza kartę wymagającą konkretnej talii, nie automatyczną bombę. Guiding Hydra i Ajani’s Anguish mają A w pełnym Guide oraz A+ w Handout — zachowano obie oceny. Teksty zdolności i warianty kart pochodzą z lokalnego JSON.</p></details><p><a href="index.html">Pełna galeria FRA + FRC</a> · <a href="#wanted">Poszukiwane karty</a></p>
+
+  <div class="toolbar">
+    <select id="categoryFilter" aria-label="Filtr przeznaczenia">
+      <option value="limited">Wybór Limited</option><option value="wanted">Zaznaczone karty</option><option value="all">Cały katalog FRA + FRC</option><option value="FRC">FRC</option><option value="Fixing">Fixing</option><option value="Glue">Glue / karty spajające talię</option><option value="Way / Jace">Way / Jace</option><option value="Removal">Removal</option><option value="Combat trick">Combat trick</option><option value="Build-around">Build-around / warunkowe</option>
+      <option value="Top common">Top common</option>
+      <option value="Top uncommon">Top uncommon</option>
+      <option value="Sideboard">Sideboard</option>
+      <option value="Signpost">Signpost</option>
+      <option value="Bomb">Bomb</option>
+      <option value="Synergy payoff">Synergy payoff</option>
+      <option value="Playable">Playable</option>
+    </select>
+    <select id="archetypeFilter" aria-label="Filtr archetypu">
+      <option value="all">Wszystkie archetypy</option>
+      <option value="WU">WU Fatehold — scry / surveil</option>
+      <option value="UB">UB Theorix — graveyard / threshold</option>
+      <option value="BR">BR Stingerquill — burn / Cadets</option>
+      <option value="RG">RG Konstrari — Heartwood / rampa</option>
+      <option value="GW">GW Vigorbloom — lifegain / countery</option>
+      <option value="WB">WB Attrition — wymiany / recursion</option>
+      <option value="UR">UR Prowess — noncreature spells</option>
+      <option value="BG">BG Midrange — deathtouch / duże stwory</option>
+      <option value="RW">RW Army — tokeny / countery</option>
+      <option value="GU">GU Mastery — Jace / planeswalkerzy</option>
+    </select>
+    <select id="colorFilter" aria-label="Filtr koloru">
+      <option value="all">Wszystkie kolory</option>
+      <option value="W">W</option>
+      <option value="U">U</option>
+      <option value="B">B</option>
+      <option value="R">R</option>
+      <option value="G">G</option>
+      <option value="Gold">Gold</option>
+      <option value="Colorless">Colorless</option>
+    </select>
+    <input id="search" type="search" placeholder="Szukaj nazwy karty" aria-label="Szukaj nazwy karty"><span id="count" class="count"></span>
+  </div>
+
+  <p id="archetypePlan" class="subtitle" hidden></p>
+  <div id="missing" class="missing" hidden></div>
+  <div id="gallery" class="gallery"></div>
+
+  <h2 id="wanted">Poszukiwane karty</h2>
+  <p>Lista z kodu uzupełniona o zmiany zapisane w tej przeglądarce. Dodawaj zaznaczone karty przyciskiem w pełnej galerii. Usunięcia są zapamiętywane także dla kart z listy początkowej.</p>
+  <p id="wantedStatus"></p>
+  <div id="wantedGallery" class="gallery"></div>
+  <h2>Lista zaznaczonych kart</h2><p>Zaznacz karty i podaj ilość. Lista jest wspólna z pełną galerią FRA + FRC, zapisywana w tej przeglądarce i obejmuje także karty ukryte filtrami.</p><div class="controls">
+    <button class="primary" onclick="generateList()">Generuj listę zaznaczonych kart</button>
+    <button onclick="copyList()">Skopiuj do schowka</button>
+    <button onclick="saveList()">Zapisz jako TXT</button>
+    <button onclick="clearSelections()">Wyczyść zaznaczenia</button>
+    <button onclick="selectAllVisible()">Zaznacz widoczne</button>
+  </div>
+  <textarea id="outputList" placeholder="Tutaj pojawi się lista zaznaczonych kart..."></textarea>
+
+  <script src="wanted-store.js"></script>
+  <script>
+    // STAŁA LISTA POSZUKIWANYCH KART — edytuj tutaj.
+    // Wpisz nazwę z FRA_cards.json lub FRC_cards.json oraz potrzebną ilość.
+    // Opcjonalne set i collector_number wskazują konkretny dodatek / wariant.
+    // Bez wariantu pokazujemy jeden wydruk o najniższym numerze kolekcjonerskim.
+    // Przykłady (usuń // przed wybraną pozycją, aby ją włączyć):
+    const wantedCards = [
+      // { name: "The Theorist, Jace Beleren", qty: 1 },
+      { name: "Memory Trap", qty: 4, set: "FRA", collector_number: "15" },
+    ];
+
+    const gallery = document.getElementById("gallery");
+    const outputList = document.getElementById("outputList");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const colorFilter = document.getElementById("colorFilter");
+    const count = document.getElementById("count");
+    const missing = document.getElementById("missing");
+    const storagePrefix = "";
+
+    const guideCards = [
+  {
+    "name": "Memory Trap",
+    "collector_number": "15",
+    "color": "W",
+    "category": [
+      "Top common",
+      "Removal"
+    ],
+    "grade": "Top common",
+    "purpose": "Exile dowolnego nonlandu za 3 many; odpowiedź znika po usunięciu enchantmentu.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10"
+    ],
+    "removal": "Premium"
+  },
+  {
+    "name": "Surgical Precision",
+    "collector_number": "22",
+    "color": "W",
+    "category": [
+      "Top common"
+    ],
+    "grade": "Top common",
+    "purpose": "Removal na duże stwory; gdy brak celu, dobiera kartę i daje życie.",
+    "sources": [
+      "h2",
+      "g7"
+    ]
+  },
+  {
+    "name": "Campus Crier",
+    "collector_number": "4",
+    "color": "W",
+    "category": [
+      "Top common"
+    ],
+    "grade": "Top common",
+    "purpose": "3/1 za 2 many; po śmierci daje wartość przez empower z grobu.",
+    "sources": [
+      "h2",
+      "g7"
+    ]
+  },
+  {
+    "name": "Hexhaven Battalion",
+    "collector_number": "12",
+    "color": "W",
+    "category": [
+      "Top common",
+      "Synergy payoff",
+      "Glue"
+    ],
+    "grade": "Top common",
+    "purpose": "Trzy Cadety i empower 2 albo basic landcycling. Elastyczny top-end do szerokiego stołu.",
+    "sources": [
+      "h2",
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Mindseeker Oculus",
+    "collector_number": "33",
+    "color": "U",
+    "category": [
+      "Top common",
+      "Synergy payoff"
+    ],
+    "grade": "Top common",
+    "purpose": "Ciało plus empower 4: możliwość dobrania karty z tokena Jace.",
+    "sources": [
+      "h2",
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Surveillance Phantasm",
+    "collector_number": "42",
+    "color": "U",
+    "category": [
+      "Top common"
+    ],
+    "grade": "Top common",
+    "purpose": "2/3 flying vigilance za 2; scry lub surveil włącza atak. Dobry wczesny bloker.",
+    "sources": [
+      "h2",
+      "g7"
+    ]
+  },
+  {
+    "name": "Infinite Coursework",
+    "collector_number": "31",
+    "color": "U",
+    "category": [
+      "Top common",
+      "Removal"
+    ],
+    "grade": "Top common",
+    "purpose": "Wyłącza zdolności i odtapowywanie stwora, także prepared.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10"
+    ],
+    "removal": "Bardzo mocny"
+  },
+  {
+    "name": "Unsummon",
+    "collector_number": "46",
+    "color": "U",
+    "category": [
+      "Top common",
+      "Synergy payoff"
+    ],
+    "grade": "Top common",
+    "purpose": "Tani bounce: tempo przeciw tokenom, drogim stworom i przygotowanym zagrożeniom.",
+    "sources": [
+      "h2",
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Last Gasp",
+    "collector_number": "56",
+    "color": "B",
+    "category": [
+      "Top common",
+      "Removal",
+      "Combat trick"
+    ],
+    "grade": "Top common",
+    "purpose": "Tanie -3/-3 pozwala sprawnie wymieniać manę za zagrożenie.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10",
+      "h4"
+    ],
+    "removal": "Bardzo mocny"
+  },
+  {
+    "name": "Extended Absence",
+    "collector_number": "54",
+    "color": "B",
+    "category": [
+      "Top common",
+      "Removal"
+    ],
+    "grade": "Top common",
+    "purpose": "Exile stwora lub planeswalkera bez warunku, z niewielkim lifedrainem.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10"
+    ],
+    "removal": "Premium"
+  },
+  {
+    "name": "Silence the Echo",
+    "collector_number": "66",
+    "color": "B",
+    "category": [
+      "Top common",
+      "Removal"
+    ],
+    "grade": "Top common",
+    "purpose": "Removal za 2 many z poświęceniem; bez fodderu kosztuje 5.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10"
+    ],
+    "removal": "Bardzo mocny"
+  },
+  {
+    "name": "Rampart Hunter",
+    "collector_number": "60",
+    "color": "B",
+    "category": [
+      "Top common",
+      "Synergy payoff"
+    ],
+    "grade": "Top common",
+    "purpose": "3/3 deathtouch; premia na wejściu pomaga wymusić korzystną wymianę.",
+    "sources": [
+      "h2",
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "No Admittance",
+    "collector_number": "89",
+    "color": "R",
+    "category": [
+      "Top common",
+      "Removal"
+    ],
+    "grade": "Top common",
+    "purpose": "3 obrażenia w dowolny cel za 2 many i dodatkowy empower.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10"
+    ],
+    "removal": "Premium"
+  },
+  {
+    "name": "Wrath of the Bloodmane",
+    "collector_number": "96",
+    "color": "R",
+    "category": [
+      "Top common",
+      "Removal"
+    ],
+    "grade": "Top common",
+    "purpose": "4 obrażenia w stwora lub planeswalkera; legenda obniża koszt.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10"
+    ],
+    "removal": "Mocny"
+  },
+  {
+    "name": "Awaken the Inferno",
+    "collector_number": "74",
+    "color": "R",
+    "category": [
+      "Top common",
+      "Removal"
+    ],
+    "grade": "Top common",
+    "purpose": "6 obrażeń i counter; na początku gry można wymienić na basic land.",
+    "sources": [
+      "h2",
+      "g7",
+      "h3",
+      "g10"
+    ],
+    "removal": "Mocny",
+    "fromNotes": true
+  },
+  {
+    "name": "Heartstring Puller",
+    "collector_number": "86",
+    "color": "R",
+    "category": [
+      "Top common",
+      "Synergy payoff"
+    ],
+    "grade": "Top common",
+    "purpose": "Dwa ciała z jednej karty wspierają agresję i poświęcanie.",
+    "sources": [
+      "h2",
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Bestial Incursion",
+    "collector_number": "98",
+    "color": "G",
+    "category": [
+      "Top common",
+      "Synergy payoff"
+    ],
+    "grade": "Top common",
+    "purpose": "4/4 trample, a flashback daje drugiego stwora w długiej grze.",
+    "sources": [
+      "h2",
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "Compel Brutality",
+    "collector_number": "101",
+    "color": "G",
+    "category": [
+      "Top common"
+    ],
+    "grade": "Top common",
+    "purpose": "Tani bite z siły stwora lub loyalty planeswalkera; wymaga własnego celu.",
+    "sources": [
+      "h2",
+      "g7"
+    ]
+  },
+  {
+    "name": "Wrecking Gecko",
+    "collector_number": "120",
+    "color": "G",
+    "category": [
+      "Top common"
+    ],
+    "grade": "Top common",
+    "purpose": "5/5 ward 2 za 5 many; finisher z późnym wzmocnieniem i trample.",
+    "sources": [
+      "h2",
+      "g7"
+    ]
+  },
+  {
+    "name": "Greenhouse Propagator",
+    "collector_number": "104",
+    "color": "G",
+    "category": [
+      "Top common",
+      "Synergy payoff"
+    ],
+    "grade": "Top common",
+    "purpose": "Blokuje i rampuje; życie za kolejne stwory wspiera lifegain payoffs.",
+    "sources": [
+      "h2",
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RG",
+      "GW"
+    ]
+  },
+  {
+    "name": "Fatehold Chronologist // Peer Review",
+    "collector_number": "133",
+    "color": "Gold",
+    "category": [
+      "Glue",
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Tani flyer, potem Cadet i surveil z Peer Review; spaja WU tempo i szeroki stół.",
+    "sources": [
+      "g7",
+      "h2"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Ferocity of the Hunt",
+    "collector_number": "134",
+    "color": "Gold",
+    "category": [
+      "Glue",
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Flash, deathtouch i powrót po śmierci; dobra wymiana i wsparcie graveyard midrange.",
+    "sources": [
+      "g7",
+      "h2"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "Konstrari Improviser // Soul Tether",
+    "collector_number": "139",
+    "color": "Gold",
+    "category": [
+      "Glue",
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Wczesne ciało z przygotowanym Soul Tether; Heartwood rampuje i fixuje R/G.",
+    "sources": [
+      "g7",
+      "h2"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Theorix Metamage // Omit Variables",
+    "collector_number": "156",
+    "color": "Gold",
+    "category": [
+      "Glue",
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Self-mill pomaga osiągnąć threshold, po którym stwór zyskuje siłę i flying.",
+    "sources": [
+      "g7",
+      "h2"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Twinned Vision",
+    "collector_number": "157",
+    "color": "Gold",
+    "category": [
+      "Glue",
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Tani draw z flashback; paliwo dla prowess i długiej gry.",
+    "sources": [
+      "g7",
+      "h2"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Whiplash Wordsmith // Vicious Verse",
+    "collector_number": "164",
+    "color": "Gold",
+    "category": [
+      "Glue",
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Po noncombat damage dostaje flying i haste; przygotowany spell sam włącza ten warunek.",
+    "sources": [
+      "g7"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Murmuring Volume",
+    "collector_number": "174",
+    "color": "Colorless",
+    "category": [
+      "Glue",
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Wolny rock za 3 many: dowolny kolor oraz loot w późnej grze. Najlepszy w wolniejszej talii.",
+    "sources": [
+      "g7",
+      "h4",
+      "g4"
+    ]
+  },
+  {
+    "name": "Way of the Healer",
+    "collector_number": "207",
+    "color": "W",
+    "category": [
+      "Top uncommon",
+      "Way / Jace"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Empower 5; zdolność −2 tworzy Cadeta i surveiluje. Natychmiast rozwija stół i zostawia Jace.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3"
+    ],
+    "fromNotes": true
+  },
+  {
+    "name": "Thalia, the Survivor",
+    "collector_number": "205",
+    "color": "W",
+    "category": [
+      "Top uncommon"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "3/4 lifelink stabilizuje wyścig; noncreature spelle przeciwnika kosztują o 1 więcej.",
+    "sources": [
+      "h2",
+      "g8"
+    ]
+  },
+  {
+    "name": "Your Fate Ends Here",
+    "collector_number": "24",
+    "color": "W",
+    "category": [
+      "Top uncommon",
+      "Removal"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Odpowiedź na większe zagrożenia z dodatkowym surveil.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10"
+    ],
+    "removal": "Premium"
+  },
+  {
+    "name": "Saheeli, Consul of Oversight",
+    "collector_number": "203",
+    "color": "W",
+    "category": [
+      "Top uncommon",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "4/4 flying; pierwszy scry lub surveil w każdej turze tworzy latającego Thoptera.",
+    "sources": [
+      "h2",
+      "g8"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Way of the Cryomancer",
+    "collector_number": "223",
+    "color": "U",
+    "category": [
+      "Top uncommon",
+      "Way / Jace"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Empower 5; zdolność −3 kopiuje następny instant lub sorcery w tej turze. Szczególnie mocne z removalem.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3"
+    ],
+    "fromNotes": true
+  },
+  {
+    "name": "Plan for All Outcomes",
+    "collector_number": "35",
+    "color": "U",
+    "category": [
+      "Top uncommon",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Usuwa nonland ze stołu i rozwija Jace przy noncreature spellach.",
+    "sources": [
+      "h2",
+      "g8"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UR",
+      "GU"
+    ]
+  },
+  {
+    "name": "Hapatra, the Desert Frost",
+    "collector_number": "215",
+    "color": "U",
+    "category": [
+      "Top uncommon"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Ciało plus tap i stun na wejściu: tempo i czas na silnik Jace.",
+    "sources": [
+      "h2",
+      "g8"
+    ]
+  },
+  {
+    "name": "Traxos, Academy Guardian",
+    "collector_number": "222",
+    "color": "U",
+    "category": [
+      "Top uncommon"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Flying, vigilance i prowess; po noncreature spellu kosztuje o 2 mniej.",
+    "sources": [
+      "h2",
+      "g8"
+    ]
+  },
+  {
+    "name": "Way of the Deathbringer",
+    "collector_number": "238",
+    "color": "B",
+    "category": [
+      "Top uncommon",
+      "Way / Jace"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Empower 5; zdolność −2 pozwala poświęcić stwora, aby stworzyć 4/4 trample. Wymaga fodderu.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3"
+    ],
+    "fromNotes": true
+  },
+  {
+    "name": "Multiply by Zero",
+    "collector_number": "58",
+    "color": "B",
+    "category": [
+      "Top uncommon",
+      "Removal",
+      "Combat trick"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Bazowe 0/0 usuwa większość stworów, ale countery mogą je uratować.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10",
+      "h4"
+    ],
+    "removal": "Premium"
+  },
+  {
+    "name": "Break Under Pressure",
+    "collector_number": "50",
+    "color": "B",
+    "category": [
+      "Top uncommon",
+      "Removal"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Rywal poświęca stwora lub planeswalkera o najwyższym mana value; dodatkowe 2 życia stabilizują.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10"
+    ],
+    "removal": "Bardzo mocny"
+  },
+  {
+    "name": "Rewrite Regrets",
+    "collector_number": "62",
+    "color": "B",
+    "category": [
+      "Top uncommon"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Reanimacja stwora lub planeswalkera MV do 6 plus empower.",
+    "sources": [
+      "h2",
+      "g8"
+    ]
+  },
+  {
+    "name": "Way of the Warlord",
+    "collector_number": "255",
+    "color": "R",
+    "category": [
+      "Top uncommon",
+      "Way / Jace"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Empower 5; zdolność −4 zadaje 2 w stwora/PW i 2 w gracza. Removal i reach z jednego silnika.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3"
+    ],
+    "fromNotes": true
+  },
+  {
+    "name": "Fulminous Forte",
+    "collector_number": "84",
+    "color": "R",
+    "category": [
+      "Top uncommon",
+      "Removal"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "5 obrażeń lub jednostronne czyszczenie małych stworów i planeswalkerów.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10"
+    ],
+    "removal": "Mocny"
+  },
+  {
+    "name": "Violent Echoes",
+    "collector_number": "95",
+    "color": "R",
+    "category": [
+      "Top uncommon",
+      "Removal"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "6 obrażeń; nadmiar zamienia się w loyalty Jace.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10"
+    ],
+    "removal": "Mocny"
+  },
+  {
+    "name": "Kiora of Fire and Ashes",
+    "collector_number": "247",
+    "color": "R",
+    "category": [
+      "Top uncommon",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Za 6 many daje 2/2 i smoka 5/5 flying; później może tworzyć kolejne smoki.",
+    "sources": [
+      "h2",
+      "g8"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Way of the Wildspeaker",
+    "collector_number": "268",
+    "color": "G",
+    "category": [
+      "Top uncommon",
+      "Way / Jace"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Empower 7; zdolność −4 tworzy 4/4 trample i zostawia loyalty na dalszą wartość.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3"
+    ],
+    "fromNotes": true
+  },
+  {
+    "name": "Ghalta the Unstoppable",
+    "collector_number": "260",
+    "color": "G",
+    "category": [
+      "Top uncommon",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "8/8 trample z kosztem obniżanym przez największą siłę własnego stwora; daje trample reszcie drużyny.",
+    "sources": [
+      "h2",
+      "g8"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "Ruric Thar, Magecrusher",
+    "collector_number": "265",
+    "color": "G",
+    "category": [
+      "Top uncommon",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Drogi finisher: reach, vigilance, trample i hexproof do zadania combat damage. Cel dla rampy.",
+    "sources": [
+      "h2",
+      "g8"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "Titanbones, Towering Heart",
+    "collector_number": "266",
+    "color": "G",
+    "category": [
+      "Top uncommon",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Reach i dwa countery przy każdym lifegainie; silny payoff, a discard daje 3 życia.",
+    "sources": [
+      "h2",
+      "g8"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Craftwork Crusher",
+    "collector_number": "127",
+    "color": "Gold",
+    "category": [
+      "Top uncommon",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "Top-end RG: trample i dwa efekty ETB spośród 4 obrażeń, Cadeta i draw. Wymaga rampy i dobrej many.",
+    "sources": [
+      "h2",
+      "g8"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Mind Meanderer",
+    "collector_number": "141",
+    "color": "Gold",
+    "category": [
+      "Top uncommon",
+      "Removal",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "GU: latający finisher z fight na wejściu; potrzeba 6 many.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10"
+    ],
+    "removal": "Gold — warunkowy",
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Fatehold Charm",
+    "collector_number": "132",
+    "color": "Gold",
+    "category": [
+      "Top uncommon",
+      "Combat trick",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "WU: draw z empower, bounce spellu/stwora albo +1/+2 dla drużyny. Elastyczne tempo i value.",
+    "sources": [
+      "h2",
+      "g8",
+      "h4",
+      "g10"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Vigorbloom Charm",
+    "collector_number": "160",
+    "color": "Gold",
+    "category": [
+      "Top uncommon",
+      "Removal",
+      "Combat trick",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "GW: ochrona, cantrip z życiem albo counter i fight. Removal zależy od własnego stwora.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10",
+      "h4"
+    ],
+    "removal": "Gold — warunkowy",
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Warrior's Blades",
+    "collector_number": "163",
+    "color": "Gold",
+    "category": [
+      "Top uncommon",
+      "Removal",
+      "Synergy payoff"
+    ],
+    "grade": "Top uncommon",
+    "purpose": "RW: removal i lifegain na wejściu, potem Equipment.",
+    "sources": [
+      "h2",
+      "g8",
+      "h3",
+      "g10"
+    ],
+    "removal": "Gold — warunkowy",
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "The Theorist, Jace Beleren",
+    "collector_number": "43",
+    "color": "U",
+    "category": [
+      "Bomb",
+      "Way / Jace"
+    ],
+    "grade": "S",
+    "purpose": "Stały draw, tokeny do obrony i bounce przeciwnika.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true
+  },
+  {
+    "name": "Ajani Unrelenting",
+    "collector_number": "242",
+    "color": "R",
+    "category": [
+      "Bomb",
+      "Synergy payoff"
+    ],
+    "grade": "S",
+    "purpose": "Cadet przy każdej aktywowanej loyalty ability; −3 czyści stół z wyjątkiem własnych tokenów.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Chandra, Torch of Defiance",
+    "collector_number": "244",
+    "color": "R",
+    "category": [
+      "Bomb",
+      "Synergy payoff"
+    ],
+    "grade": "S",
+    "purpose": "Źródło kart, many i removalu; emblem kończy długą grę.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Kwia Vigorbloom",
+    "collector_number": "140",
+    "color": "Gold",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "S",
+    "purpose": "6/6 flying, vigilance, lifelink i ward 2. Stabilizuje wyścig, a lifegain generuje Lotus.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Uldaros Theorix",
+    "collector_number": "159",
+    "color": "Gold",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "S",
+    "purpose": "5/5 flying; po rzuceniu pozwala zagrać kopie kart z grobu o łącznym mana value do 6. Zadbaj o graveyard.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Garruk, Curse Breaker",
+    "collector_number": "259",
+    "color": "G",
+    "category": [
+      "Bomb",
+      "Synergy payoff"
+    ],
+    "grade": "S",
+    "purpose": "Tokeny 4/4, odtapowanie lądów i draw za wchodzące stwory o sile 4+. Samodzielny silnik przewagi.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "Garruk, Veiled Butcher",
+    "collector_number": "229",
+    "color": "B",
+    "category": [
+      "Bomb",
+      "Synergy payoff"
+    ],
+    "grade": "A+",
+    "purpose": "Sacrifice z własnym tokenem 4/4, osłabianie stwora oraz discard/value. Kilka osi przewagi.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "The Echoverse Fulcrum",
+    "collector_number": "169",
+    "color": "Colorless",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "A+",
+    "purpose": "Na wejściu draw i discard; za 5 many, tap i exile niszczy wszystkie stwory. Widoczny z wyprzedzeniem sweeper.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Overwrite the Multiverse",
+    "collector_number": "59",
+    "color": "B",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "A+",
+    "purpose": "Exile wszystkich stworów i duży empower; buduj plan na odbudowę stołu.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Denzilore Fatehold",
+    "collector_number": "128",
+    "color": "Gold",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "A+",
+    "purpose": "Flash i flying; każdy scry lub surveil daje counter całej drużynie. Mocny payoff WU.",
+    "sources": [
+      "h3",
+      "g9"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Guiding Hydra",
+    "collector_number": "11",
+    "color": "W",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "A (Guide) / A+ (Handout)",
+    "purpose": "Elastyczny koszt i powtarzalne wzmacnianie reszty drużyny.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Ajani's Anguish",
+    "collector_number": "72",
+    "color": "R",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "A (Guide) / A+ (Handout)",
+    "purpose": "Skalowalny removal lub finisher w gracza; daje drużynie trample.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Emrakul, the Exigent Doom",
+    "collector_number": "1",
+    "color": "Colorless",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "A — rampa",
+    "purpose": "Odporny finisher 12/12 flying, trample i ward. Wymaga czasu oraz rampy; nie dokładaj go bez planu na koszt 10 many.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Prophesied End",
+    "collector_number": "17",
+    "color": "W",
+    "category": [
+      "Removal"
+    ],
+    "grade": "Bardzo mocny",
+    "purpose": "Tani removal; najlepiej w atakującego stwora, aby nie oddać karty.",
+    "sources": [
+      "h3",
+      "g10"
+    ],
+    "removal": "Bardzo mocny"
+  },
+  {
+    "name": "Stingerquill Charm",
+    "collector_number": "150",
+    "color": "Gold",
+    "category": [
+      "Removal",
+      "Combat trick",
+      "Synergy payoff"
+    ],
+    "grade": "Gold — warunkowy",
+    "purpose": "BR: 3 obrażenia w dowolny cel, first strike z deathtouch albo Cadet z haste. Removal, trik i presja.",
+    "sources": [
+      "h3",
+      "g10",
+      "h4"
+    ],
+    "removal": "Gold — warunkowy",
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Theorix Charm",
+    "collector_number": "155",
+    "color": "Gold",
+    "category": [
+      "Removal",
+      "Synergy payoff"
+    ],
+    "grade": "Gold — warunkowy",
+    "purpose": "UB: warunkowy counter noncreature spellu, −2/−2 albo mill 3 z draw. Spaja kontrolę i threshold.",
+    "sources": [
+      "h3",
+      "g10"
+    ],
+    "removal": "Gold — warunkowy",
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Refute Destiny",
+    "collector_number": "18",
+    "color": "W",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "Tani exile, ale tylko przeciw zielonym lub niebieskim celom.",
+    "sources": [
+      "h3",
+      "g10"
+    ]
+  },
+  {
+    "name": "Precise Redaction",
+    "collector_number": "36",
+    "color": "U",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "Counter wyłącznie na białe lub czarne spelle; wkładaj przeciw właściwym kolorom.",
+    "sources": [
+      "h3",
+      "g10"
+    ]
+  },
+  {
+    "name": "Terminal Criticism",
+    "collector_number": "68",
+    "color": "B",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "Removal tylko na niebieskie i czerwone cele.",
+    "sources": [
+      "h3",
+      "g10"
+    ]
+  },
+  {
+    "name": "Essence Burn",
+    "collector_number": "82",
+    "color": "R",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "5 obrażeń i exile przeciw czarnym lub zielonym celom.",
+    "sources": [
+      "h3",
+      "g10"
+    ]
+  },
+  {
+    "name": "Flourishing Grapple",
+    "collector_number": "102",
+    "color": "G",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "Odbiera zdolności czerwonemu lub białemu celowi i daje bite. Wymaga własnego stwora i właściwego koloru rywala.",
+    "sources": [
+      "h3",
+      "g10"
+    ]
+  },
+  {
+    "name": "Academic Ascent",
+    "collector_number": "2",
+    "color": "W",
+    "category": [
+      "Combat trick"
+    ],
+    "grade": "Synergia",
+    "purpose": "+2/+2 i flying do końca tury oraz empower 2; trik bojowy z dalszą wartością.",
+    "sources": [
+      "h4",
+      "g10"
+    ]
+  },
+  {
+    "name": "Perfected Theory",
+    "collector_number": "34",
+    "color": "U",
+    "category": [
+      "Combat trick",
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Ustawia bazę P/T na 1/1 lub 4/5. Uwzględnij countery i inne modyfikatory w walce.",
+    "sources": [
+      "h4",
+      "g10"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Blazing Crescendo",
+    "collector_number": "75",
+    "color": "R",
+    "category": [
+      "Combat trick"
+    ],
+    "grade": "Synergia",
+    "purpose": "+3/+1 i karta z exile do końca następnej tury. Presja połączona z zasobami.",
+    "sources": [
+      "h4",
+      "g10"
+    ]
+  },
+  {
+    "name": "Tethermage's Advantage",
+    "collector_number": "117",
+    "color": "G",
+    "category": [
+      "Combat trick"
+    ],
+    "grade": "Synergia",
+    "purpose": "+2/+2, reach i untap za G; karze ataki w pozornie odsłonięty stół.",
+    "sources": [
+      "h4",
+      "g10"
+    ]
+  },
+  {
+    "name": "Budding Insurgent",
+    "collector_number": "99",
+    "color": "G",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "Stwór z odpowiedzią na artefakt lub enchantment. Zyskuje przeciw Way i Memory Trap.",
+    "sources": [
+      "g11"
+    ]
+  },
+  {
+    "name": "Afterthought Sentry",
+    "collector_number": "166",
+    "color": "Colorless",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "Przy ataku usuwa kartę z grobu; ważny przeciw UB/BG/WB i flashback. Może zyskać flying.",
+    "sources": [
+      "g11",
+      "h5"
+    ]
+  },
+  {
+    "name": "Living Library",
+    "collector_number": "172",
+    "color": "Colorless",
+    "category": [
+      "Sideboard"
+    ],
+    "grade": "BO3",
+    "purpose": "0/4 za 2 many przeciw aggro; później zamienia się w odpowiedź na stwora lub planeswalkera.",
+    "sources": [
+      "g11"
+    ]
+  },
+  {
+    "name": "Return to the Light Realms",
+    "collector_number": "20",
+    "color": "W",
+    "category": [
+      "Build-around"
+    ],
+    "grade": "Warunkowa",
+    "purpose": "9 many i wymóg pełnego grobu. Bez rampy i silnika graveyard może zostać w sideboardzie.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Omnipresence",
+    "collector_number": "110",
+    "color": "G",
+    "category": [
+      "Build-around"
+    ],
+    "grade": "Warunkowa",
+    "purpose": "Wymaga szerokiego stołu; nie naprawia przegrywanej pozycji. Nie oceniaj wyłącznie po rarity.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Bloodline Recollector // Ancestral Craving",
+    "collector_number": "49",
+    "color": "B",
+    "category": [
+      "Build-around"
+    ],
+    "grade": "Warunkowa",
+    "purpose": "Potrzebuje tury z trzema zgonami, aby stać się prepared. Wymaga odpowiedniego shellu.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Tarmogoyf",
+    "collector_number": "116",
+    "color": "G",
+    "category": [
+      "Build-around"
+    ],
+    "grade": "Warunkowa",
+    "purpose": "Siła zależy od różnorodności typów kart w grobach; nie jest automatyczną bombą Limited.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Codie, Ravenous Codex",
+    "collector_number": "168",
+    "color": "Colorless",
+    "category": [
+      "Build-around"
+    ],
+    "grade": "Warunkowa",
+    "purpose": "Nagradza wiele prepared spells. Pięciokolorowa aktywacja jest pułapką bez odpowiedniej many.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Kindred Judgment",
+    "collector_number": "13",
+    "color": "W",
+    "category": [
+      "Build-around"
+    ],
+    "grade": "Warunkowa",
+    "purpose": "Sweeper za 7; asymetryczny dopiero przy odpowiedniej liczbie stworów tego samego typu.",
+    "sources": [
+      "h3",
+      "g9"
+    ]
+  },
+  {
+    "name": "Room of Refuge",
+    "collector_number": "188",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Wybór koloru many; w późnej grze zamienia się w countery.",
+    "sources": [
+      "h4",
+      "g4"
+    ]
+  },
+  {
+    "name": "Dedicated Commons",
+    "collector_number": "175",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Fatehold Annex",
+    "collector_number": "177",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Formidable Commons",
+    "collector_number": "178",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "Innovative Commons",
+    "collector_number": "182",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Konstrari Annex",
+    "collector_number": "183",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Meticulous Commons",
+    "collector_number": "184",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Stingerquill Annex",
+    "collector_number": "190",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Theorix Annex",
+    "collector_number": "192",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Transformative Commons",
+    "collector_number": "193",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Vigorbloom Annex",
+    "collector_number": "194",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Fixing",
+    "purpose": "Common dual: wchodzi tapped, chyba że kontrolujesz planeswalkera. Token Jace pozwala wejść odtapowanym; dobierz do kolorów talii.",
+    "sources": [
+      "h4",
+      "g4"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Paradox Shaper // Omit Variables",
+    "collector_number": "143",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "UB: powtarzalny self-mill dla threshold i flashback.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Recursive Recruitment",
+    "collector_number": "147",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "UB: dwa Cadety, potem flashback ze skalowaniem counterów według liczby kart w grobie.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Generous Revival",
+    "collector_number": "8",
+    "color": "W",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "Dwie reanimacje dzięki flashback; potrzebuje dobrych celów MV 3 lub mniej.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Blessed Ghoul",
+    "collector_number": "123",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "WB: lifelink i powrót do ręki z grobu. Powtarzalny zasób do attrition i sacrifice.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Twisted Fates",
+    "collector_number": "158",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "WB: uniwersalny removal z counterami dla drużyny; wymagający koszt.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Edgar, Ancient Bloodlord",
+    "collector_number": "270",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "WB: życie za zgony własnych stworów/PW i sac outlet z counterem oraz menace.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Stingerquill Voxmancer // Vicious Verse",
+    "collector_number": "151",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "BR: co upkeep odzyskuje prepared; powtarzalny ping włącza noncombat damage payoffs.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Grim Repriser",
+    "collector_number": "136",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "BR: prowess i powrót po noncombat damage.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Desperate Futurescribe",
+    "collector_number": "129",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "WU: latanie, wzmacnianie ataków i premie za scry/surveil.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Semester Foreseer // Peer Review",
+    "collector_number": "39",
+    "color": "U",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "WU: surveil na wejściu, potem Cadet i kolejny surveil z przygotowanego spellu.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Woodwork Prodigy // Soul Tether",
+    "collector_number": "165",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "RG: powtarzalne Heartwood do rampy i synergii artefaktów.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Konstrari Charm",
+    "collector_number": "138",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "RG: odpowiedź na flyera, countery z trample albo trzy bezkolorowe many do top-endu.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Vigorbloom Vanguard // Seed Suture",
+    "collector_number": "161",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "GW: counter i życie z przygotowanego spellu; vigilance dla stworów z counterami.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Bloombrute",
+    "collector_number": "124",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "GW: lifegain dobiera karty, aktywacja daje trample i lifelink.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Emergency Phytomedic // Seed Suture",
+    "collector_number": "130",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "GW: tani stwór oraz counter i życie z przygotowanego spellu. Enabler lifegain/counters.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Primal Witchstalker",
+    "collector_number": "144",
+    "color": "Gold",
+    "category": [
+      "Signpost"
+    ],
+    "grade": "Archetyp",
+    "purpose": "BG: self-mill i odzyskanie landu bezpośrednio na stół.",
+    "sources": [
+      "g6"
+    ]
+  },
+  {
+    "name": "Clash of Elements",
+    "collector_number": "126",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "UR: tempo przeciw dowolnemu nonlandowi.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Tomik, Izzet Sparkmage",
+    "collector_number": "253",
+    "color": "R",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "UR: prowess i dodatkowe obrażenie z własnego noncombat damage. Wspiera burn i tempo.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Tetsuko Umezawa, Pursuer",
+    "collector_number": "252",
+    "color": "R",
+    "category": [
+      "Signpost"
+    ],
+    "grade": "Archetyp",
+    "purpose": "UR: double strike z prowess daje duży burst po tanich spellach.",
+    "sources": [
+      "g6"
+    ]
+  },
+  {
+    "name": "Charge the Sanctum",
+    "collector_number": "125",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "RW: team pump do szerokiego ataku albo wzmocnienie pojedynczego stwora z first strike.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Mabel, Valley Hero",
+    "collector_number": "274",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "RW: counter na nowo wchodzącym stworze; szczególnie dobrze skaluje się z tokenami.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Tam's Resistance",
+    "collector_number": "153",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "GU: counter, vigilance i empower 4. Enabler dla silnika Jace.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Kiora of Salt and Sand",
+    "collector_number": "273",
+    "color": "Gold",
+    "category": [
+      "Signpost",
+      "Synergy payoff"
+    ],
+    "grade": "Archetyp",
+    "purpose": "GU: po loyalty ability odtapowuje atakującego i czyni go nieblokowalnym; daje PW finisher −8.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Way of the Paradox",
+    "collector_number": "267",
+    "color": "G",
+    "category": [
+      "Signpost",
+      "Way / Jace"
+    ],
+    "grade": "Archetyp",
+    "purpose": "GU: empower 5; aktywacje loyalty dają życie i dodatkowe zagranie landu. Potrzebuje payoffów.",
+    "sources": [
+      "g6"
+    ],
+    "fromNotes": true
+  },
+  {
+    "name": "Proctor of Potential",
+    "collector_number": "145",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "element pakietu scry/surveil. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Prudent Fateseer // Peer Review",
+    "collector_number": "146",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "kolejny element manipulacji biblioteką. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Null Summoner",
+    "collector_number": "142",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "payoff Threshold. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Void Extrapolator // Omit Variables",
+    "collector_number": "70",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "graveyard enabler. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Divining Duelist",
+    "collector_number": "29",
+    "color": "U",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "tempo/defensywne ciało. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Proft, Sinister Mastermind",
+    "collector_number": "235",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "value/payoff. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Yuriko, Hope from the Shadows",
+    "collector_number": "226",
+    "color": "U",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Flash; Surveil 2 albo efekt −X/−0 skalujący się z liczbą kart w graveyardzie. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Stinging Vitriol",
+    "collector_number": "152",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "2 damage + hand disruption/discard. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Hallway Heckler // Vicious Verse",
+    "collector_number": "85",
+    "color": "R",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Prepared → Vicious Verse. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Screeching Soulbreaker",
+    "collector_number": "65",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Flying; przy ataku ping + lifegain. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Cast Away Doubt",
+    "collector_number": "51",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "draw 2 + obrażenia dla graczy. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Command the Stage",
+    "collector_number": "77",
+    "color": "R",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "produkuje Cadeta i wspiera Wizard tokeny. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Heartwood Crafter // Soul Tether",
+    "collector_number": "105",
+    "color": "G",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "tani mana creature; Prepared → Soul Tether. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Tenured Tethermage",
+    "collector_number": "154",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Heartwood payoff/enabler. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Solarium Sentry",
+    "collector_number": "148",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "powtarzalny lifegain enabler. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Unflinching Hortimancer",
+    "collector_number": "23",
+    "color": "W",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "lifegain → +1/+1 counter. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Koth of the Homestead",
+    "collector_number": "199",
+    "color": "W",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Landfall → gain 1. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Blossom-Blessed Angel // Seed Suture",
+    "collector_number": "3",
+    "color": "W",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Prepared → Seed Suture. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Rank Rat",
+    "collector_number": "61",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "ETB discard. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Gallia, Tragic Host",
+    "collector_number": "228",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Menace + możliwość powrotu z graveyardu. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Liliana the Repentant",
+    "collector_number": "231",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "mill oraz możliwość reanimacji. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Liliana the Faultless",
+    "collector_number": "200",
+    "color": "W",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "lifegain/value i discard. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Fateshaper Aspirant",
+    "collector_number": "6",
+    "color": "W",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "może odzyskiwać legendary card z graveyardu. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Vindictive Triumph",
+    "collector_number": "162",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "exile creature/planeswalker; szczególnie interesujący przeciw małym permanentom. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WB"
+    ]
+  },
+  {
+    "name": "Chandra, Chill of Compliance",
+    "collector_number": "212",
+    "color": "U",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "surveil/mana dla noncreature spells. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Saheeli, Jewel of Avishkar",
+    "collector_number": "275",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "noncreature spells → Thopter value. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Chandra's Emberling",
+    "collector_number": "76",
+    "color": "R",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "noncreature spell → permanentny +1/+1 counter. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Pompous Battlemage // Improvised Act",
+    "collector_number": "90",
+    "color": "R",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "tani Prowess creature + Prepared. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UR"
+    ]
+  },
+  {
+    "name": "Teyo, Diamondblade Mage",
+    "collector_number": "236",
+    "color": "B",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Flash; deathtouch/counter utility. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BG"
+    ]
+  },
+  {
+    "name": "Ajani Resolute",
+    "collector_number": "195",
+    "color": "W",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "tani planeswalker; m.in. tworzenie 2/2 Cat Soldiera. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Solitary Cell",
+    "collector_number": "149",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "interaction. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Skilled Battlecarver",
+    "collector_number": "92",
+    "color": "R",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "tani agresywny creature z first strike. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Gallia, the Merrymaker",
+    "collector_number": "245",
+    "color": "R",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Haste; stworzenia z +1/+1 counterami dostają haste. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Graft Surgeon",
+    "collector_number": "10",
+    "color": "W",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "wchodzi z counterem i może przekazać countery po śmierci. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RW"
+    ]
+  },
+  {
+    "name": "Jace, Reality Sculptor",
+    "collector_number": "216",
+    "color": "U",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "główny planeswalker/payoff. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Tam, the Possibility",
+    "collector_number": "276",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "obniża koszt PW + Proliferate. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Entrust the Spark",
+    "collector_number": "131",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "tutor/transformacja planeswalkera w innego PW. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Avatar of Burgeoning Echoes",
+    "collector_number": "122",
+    "color": "Gold",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Landfall → Empower Jace. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Inspired Tethermage",
+    "collector_number": "109",
+    "color": "G",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "payoff za dokładanie loyalty counters. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Proft, Consulting Detective",
+    "collector_number": "218",
+    "color": "U",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "scry/surveil value. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Countersculpt",
+    "collector_number": "25",
+    "color": "U",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "counterspell + Jace synergy. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Arcane Amphisbaena",
+    "collector_number": "97",
+    "color": "G",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Deathtouch + Empower Jace. ",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GU"
+    ]
+  },
+  {
+    "name": "Ingris Stingerquill",
+    "collector_number": "137",
+    "color": "Gold",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "Synergia",
+    "purpose": "Flying; atakujące stwory zadają dodatkowe obrażenia. Aktywacja tworzy Cadeta i daje haste drużynie.",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Aerid Konstrari",
+    "collector_number": "121",
+    "color": "Gold",
+    "category": [
+      "Bomb"
+    ],
+    "grade": "Synergia",
+    "purpose": "Flying i Heartwood na wejściu oraz po śmierci. Aktywacja produkuje Heartwood i wzmacnia atak.",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Way of the Mentor",
+    "collector_number": "208",
+    "color": "W",
+    "category": [
+      "Way / Jace"
+    ],
+    "grade": "Synergia",
+    "purpose": "Empower 5; lifegain dodaje loyalty każdemu własnemu planeswalkerowi.",
+    "sources": [],
+    "fromNotes": true
+  },
+  {
+    "name": "Way of the Mind Sculptor",
+    "collector_number": "224",
+    "color": "U",
+    "category": [
+      "Way / Jace"
+    ],
+    "grade": "Synergia",
+    "purpose": "Empower 5; aktywacja usuwająca co najmniej dwa loyalty dobiera kartę.",
+    "sources": [],
+    "fromNotes": true
+  },
+  {
+    "name": "Way of the Necromancer",
+    "collector_number": "239",
+    "color": "B",
+    "category": [
+      "Way / Jace"
+    ],
+    "grade": "Synergia",
+    "purpose": "Empower 2; śmierć własnego stwora dodaje loyalty własnym planeswalkerom.",
+    "sources": [],
+    "fromNotes": true
+  },
+  {
+    "name": "Way of the Pyromancer",
+    "collector_number": "254",
+    "color": "R",
+    "category": [
+      "Way / Jace"
+    ],
+    "grade": "Synergia",
+    "purpose": "Empower 2; daje planeswalkerom zdolność +1 dodającą czerwoną manę.",
+    "sources": [],
+    "fromNotes": true
+  },
+  {
+    "name": "Deserted Beach",
+    "collector_number": "176",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Synergia",
+    "purpose": "Dual wspierający manę tej pary kolorów. Sprawdź warunek wejścia odtapowanym.",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "WU"
+    ]
+  },
+  {
+    "name": "Shipwreck Marsh",
+    "collector_number": "189",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Synergia",
+    "purpose": "Dual wspierający manę tej pary kolorów. Sprawdź warunek wejścia odtapowanym.",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "UB"
+    ]
+  },
+  {
+    "name": "Haunted Ridge",
+    "collector_number": "180",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Synergia",
+    "purpose": "Dual wspierający manę tej pary kolorów. Sprawdź warunek wejścia odtapowanym.",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "BR"
+    ]
+  },
+  {
+    "name": "Rockfall Vale",
+    "collector_number": "186",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Synergia",
+    "purpose": "Dual wspierający manę tej pary kolorów. Sprawdź warunek wejścia odtapowanym.",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "RG"
+    ]
+  },
+  {
+    "name": "Overgrown Farmland",
+    "collector_number": "185",
+    "color": "Colorless",
+    "category": [
+      "Fixing"
+    ],
+    "grade": "Synergia",
+    "purpose": "Dual wspierający manę tej pary kolorów. Sprawdź warunek wejścia odtapowanym.",
+    "sources": [],
+    "fromNotes": true,
+    "archetypes": [
+      "GW"
+    ]
+  },
+  {
+    "name": "Undulating Witness",
+    "collector_number": "45",
+    "color": "U",
+    "category": [
+      "Playable"
+    ],
+    "grade": "Synergia",
+    "purpose": "Latający finisher 3/5 z regulowaną siłą i basic landcycling.",
+    "sources": [],
+    "fromNotes": true
+  },
+  {
+    "name": "Apex Witchstalker",
+    "collector_number": "48",
+    "color": "B",
+    "category": [
+      "Playable"
+    ],
+    "grade": "Synergia",
+    "purpose": "Czarny finisher 6/4 menace z lifegainem na wejściu i po śmierci; basic landcycling pomaga z maną.",
+    "sources": [],
+    "fromNotes": true
+  },
+  {
+    "name": "Vinelasher Adept",
+    "collector_number": "119",
+    "color": "G",
+    "category": [
+      "Playable"
+    ],
+    "grade": "Synergia",
+    "purpose": "Reach, trzy countery na wejściu oraz basic landcycling.",
+    "sources": [],
+    "fromNotes": true
+  },
+  {
+    "name": "Lyra, Tolarian Archangel",
+    "collector_number": "217",
+    "color": "U",
+    "category": [
+      "Synergy payoff"
+    ],
+    "grade": "Synergia",
+    "purpose": "Flying; dobranie co najmniej trzech kart w turze daje na end stepie Anioła 3/3 flying. Aktywacja pomaga dobrać dwie karty po combat damage.",
+    "sources": [],
+    "fromNotes": true
+  }
+];
+    const archetypes = [
+  {
+    "id": "WU",
+    "label": "WU Fatehold — scry / surveil",
+    "plan": "rozwijać board, regularnie wykonywać scry/surveil i uzyskiwać dodatkowe value z payoffów."
+  },
+  {
+    "id": "UB",
+    "label": "UB Theorix — graveyard / threshold",
+    "plan": "szybko napełnić graveyard, osiągnąć 7+ kart, a następnie wykorzystać Threshold, recursion i Flashback."
+  },
+  {
+    "id": "BR",
+    "label": "BR Stingerquill — burn / Cadets",
+    "plan": "agresywna gra, bezpośrednie obrażenia, Prepared oraz dodatkowe spelle. Wizard/Cadet tworzą dodatkowy podpakiet."
+  },
+  {
+    "id": "RG",
+    "label": "RG Konstrari — Heartwood / rampa",
+    "plan": "produkować dodatkową manę i Heartwood tokens, a następnie wykorzystać ją do wystawiania dużych zagrożeń."
+  },
+  {
+    "id": "GW",
+    "label": "GW Vigorbloom — lifegain / countery",
+    "plan": "regularnie zdobywać życie, a następnie zamieniać lifegain w countery i card advantage."
+  },
+  {
+    "id": "WB",
+    "label": "WB Attrition — wymiany / recursion",
+    "plan": "wymieniać zasoby, korzystać z discardu/removalu i odzyskiwać własne stworzenia z graveyardu."
+  },
+  {
+    "id": "UR",
+    "label": "UR Prowess — noncreature spells",
+    "plan": "tanie payoff creatures + wysoka liczba noncreature spells."
+  },
+  {
+    "id": "BG",
+    "label": "BG Midrange — deathtouch / duże stwory",
+    "plan": "To najbardziej klasyczny good-stuff midrange z pokazanych archetypów."
+  },
+  {
+    "id": "RW",
+    "label": "RW Army — tokeny / countery",
+    "plan": "rozwijać szeroki board, produkować tokeny, rozdawać countery i wykorzystać haste/combat buffs do zakończenia gry."
+  },
+  {
+    "id": "GU",
+    "label": "GU Mastery — Jace / planeswalkerzy",
+    "plan": "to najbardziej defensywny z pokazanych archetypów: przeżyć early game, rozwijać planeswalkerów i wygrać late game."
+  }
+];
+
+    let allGuideCards = [];
+
+    Promise.all(["FRA_cards.json", "FRC_cards.json"].map(file => fetch(file).then(res => {
+      if (!res.ok) throw new Error(`Nie można wczytać ${file}`);
+      return res.json();
+    })))
+      .then(cards => {
+        allGuideCards = buildGuideCards(cards.flat());
+        displayGallery();
+        displayWantedCards();
+        generateList();
+      })
+      .catch(err => {
+        gallery.innerHTML = "<p style='color:red;'>Błąd wczytywania FRA_cards.json lub FRC_cards.json. Otwórz galerię przez lokalny serwer HTTP.</p>";
+        console.error(err);
+      });
+
+    const archetypeFilter = document.getElementById("archetypeFilter");
+    archetypeFilter.addEventListener("change", displayGallery);
+    categoryFilter.addEventListener("change", displayGallery);
+    colorFilter.addEventListener("change", displayGallery);
+
+    function normalizeName(value) {
+      return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+    }
+
+    function buildGuideCards(cards) {
+      return cards.map(card => {
+        const entry = card.set === 'FRA' && guideCards.find(g => g.collector_number === card.collector_number);
+        const colors = [...new Set((String(card.mana_cost || '').split(' // ')[0].match(/[WUBRG]/g) || []))];
+        return {...card, guide: entry || {color: colors.length > 1 ? 'Gold' : colors[0] || 'Colorless', category: card.set === 'FRC' ? 'FRC' : 'Pozostałe FRA', grade: '—', purpose: 'Karta z katalogu; poza wstępnym wyborem Limited.'}, limited: Boolean(entry)};
+      });
+    }
+    function cardId(card) { return card.name + '__' + card.collector_number + '__' + card.set; }
+    function readSelection(id) {
+      try { return JSON.parse(localStorage.getItem(id)) || {checked: false, qty: 1}; }
+      catch { return {checked: false, qty: 1}; }
+    }
+    document.getElementById('search').addEventListener('input', displayGallery);
+    window.addEventListener('storage', () => { displayGallery(); generateList(); displayWantedCards(); });
+
+    function displayGallery() {
+      const selectedCategory = categoryFilter.value;
+      const archetype = archetypes.find(a => a.id === archetypeFilter.value);
+      const plan = document.getElementById("archetypePlan");
+      plan.hidden = !archetype;
+      plan.textContent = archetype ? archetype.label + ": " + archetype.plan : "";
+      const selectedColor = colorFilter.value;
+      const visible = allGuideCards.filter(card => {
+        const guide = card.guide;
+        const categories = Array.isArray(guide.category) ? guide.category : [guide.category];
+        return (selectedCategory === "all" || (selectedCategory === "limited" && card.limited) || (selectedCategory === "wanted" && readSelection(cardId(card)).checked) || categories.includes(selectedCategory))
+          && (archetypeFilter.value === "all" || (guide.archetypes || []).includes(archetypeFilter.value))
+          && normalizeName(card.name).includes(normalizeName(document.getElementById("search").value))
+          && (selectedColor === "all" || guide.color === selectedColor);
+      });
+
+      count.textContent = `${visible.length} / ${allGuideCards.length} kart`;
+      gallery.innerHTML = "";
+
+      renderCards(visible, gallery);
+    }
+
+    function displayWantedCards() {
+      const target = document.getElementById("wantedGallery");
+      const status = document.getElementById("wantedStatus");
+      const unresolved = [];
+      const wanted = wantedCards.flatMap(entry => {
+        const matches = allGuideCards.filter(card =>
+          normalizeName(card.name) === normalizeName(entry.name)
+          && (!entry.set || card.set.toUpperCase() === entry.set.toUpperCase())
+          && (entry.collector_number === undefined || card.collector_number === String(entry.collector_number))
+        ).sort((a, b) => a.collector_number.localeCompare(b.collector_number, "en", { numeric: true }));
+        if (!matches.length) { unresolved.push(entry.name); return []; }
+        return [{ ...matches[0], wantedQty: Math.max(1, Math.floor(Number(entry.qty) || 1)) }];
+      });
+      target.innerHTML = "";
+      let effective;
+      try { effective = wantedStore.merge(wanted, allGuideCards); }
+      catch (error) {
+        status.textContent = "Nie udało się odczytać zmian poszukiwanych kart z pamięci przeglądarki.";
+        console.error(error);
+        return;
+      }
+      renderCards(effective, target, true);
+      status.textContent = !effective.length ? "Lista poszukiwanych kart jest jeszcze pusta."
+        : `${effective.length} pozycji na liście poszukiwanych.`;
+      if (unresolved.length) status.textContent += " Nie znaleziono kart: " + unresolved.join(", ");
+    }
+
+    function renderCards(cards, target, fixed = false) {
+      cards.forEach(card => {
+        const guide = card.guide;
+        const id = `${storagePrefix}${card.name}__${card.collector_number}__${card.set}`;
+        const saved = readSelection(id);
+
+        const div = document.createElement("div");
+        div.className = "card";
+        div.dataset.id = id;
+
+        const controls = document.createElement("div");
+        controls.className = "card-controls";
+        controls.innerHTML = `
+          <input type="checkbox" ${saved.checked ? "checked" : ""} onclick="event.stopPropagation()">
+          <input type="number" min="1" value="${saved.qty}" onclick="event.stopPropagation()">
+          <span>${card.collector_number || "?"} · ${card.rarity || "?"}</span>
+        `;
+
+        const img = document.createElement("img");
+        img.src = card.image_url;
+        img.alt = card.name;
+        img.loading = "lazy";
+        img.title = card.oracle_text || "";
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+        const price = formatPrice(card.price_usd);
+        const foilPrice = formatPrice(card.price_usd_foil);
+        const categories = Array.isArray(guide.category) ? guide.category.join(" / ") : guide.category;
+        body.innerHTML = `
+          <h2 class="card-title">${card.name}</h2>
+          <div class="badges">
+            <span class="badge ${guide.color}">${guide.color}</span>
+            <span class="badge ${guide.color}">${categories}</span>
+            <span class="badge ${guide.color}">${guide.grade}</span>
+            ${(guide.archetypes || []).map(id => `<span class="badge">${id}</span>`).join("")}
+          </div>
+          <p class="purpose">${guide.purpose}</p>
+          ${guide.removal ? `<p class="purpose"><strong>Removal:</strong> ${guide.removal}</p>` : ""}
+          <p class="sources">${sourceLinks(guide)}${guide.fromNotes ? " · Uzupełnienie: notatki o archetypach" : ""}</p>
+          <div class="value-row">
+            <span><strong>JSON:</strong> ${price} · foil ${foilPrice}</span>
+            <span>${card.mana_cost || "Land"} · ${card.set}</span>
+          </div>
+        `;
+
+        div.appendChild(controls);
+        div.appendChild(img);
+        div.appendChild(body);
+        target.appendChild(div);
+
+        if (fixed) {
+          controls.classList.add("wanted-controls");
+          controls.textContent = `Poszukiwane: ${card.wantedQty} szt. · ${card.set} #${card.collector_number}`;
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.textContent = "Usuń z poszukiwanych";
+          remove.addEventListener("click", () => {
+            try { wantedStore.remove(card); displayWantedCards(); }
+            catch (error) {
+              document.getElementById("wantedStatus").textContent = "Nie udało się zapisać usunięcia karty.";
+              console.error(error);
+            }
+          });
+          controls.appendChild(remove);
+          div.style.cursor = "default";
+          return;
+        }
+
+        const checkbox = controls.querySelector("input[type='checkbox']");
+        const qty = controls.querySelector("input[type='number']");
+        checkbox.addEventListener("change", () => updateStorage(id, checkbox.checked, qty.value));
+        qty.addEventListener("change", () => { qty.value = Math.max(1, Math.floor(Number(qty.value) || 1)); updateStorage(id, checkbox.checked, qty.value); });
+
+        div.addEventListener("click", e => {
+          if (e.target.closest("input, a")) return;
+          checkbox.checked = !checkbox.checked;
+          updateStorage(id, checkbox.checked, qty.value);
+        });
+      });
+    }
+
+    function sourceLinks(guide) {
+      return (guide.sources || []).map(ref => {
+        const handout = ref[0] === 'h';
+        const page = Number(ref.slice(1));
+        const file = handout ? 'Reality_Fracture_Sealed_Coach_Handout_v1_PL.pdf' : 'Reality_Fracture_Sealed_Guide_1_0_Pro_PL.pdf';
+        return '<a href="' + file + '#page=' + page + '" target="_blank" rel="noopener">' + (handout ? 'Handout' : 'Guide') + ', s. ' + page + '</a>';
+      }).join(' · ');
+    }
+
+    function formatPrice(value) {
+      if (value === null || value === undefined || value === "") return "brak ceny";
+      const number = Number(value);
+      if (Number.isNaN(number)) return String(value);
+      return `$${number.toFixed(2)}`;
+    }
+
+    function updateStorage(id, checked, qty) {
+      localStorage.setItem(id, JSON.stringify({ checked, qty: Math.max(1, Math.floor(Number(qty) || 1)) }));
+      generateList();
+    }
+
+    function visibleCards() {
+      return [...gallery.querySelectorAll(".card")];
+    }
+
+    function getSelectedCards() {
+      const totals = new Map();
+      allGuideCards.forEach(card => {
+        const saved = readSelection(cardId(card));
+        if (saved.checked) totals.set(card.name, (totals.get(card.name) || 0) + Math.max(1, Math.floor(Number(saved.qty) || 1)));
+      });
+      return [...totals].map(([name, qty]) => qty + ' ' + name);
+    }
+
+    function generateList() {
+      outputList.value = getSelectedCards().join("\n");
+    }
+
+    function copyList() {
+      generateList();
+      navigator.clipboard.writeText(outputList.value).then(() => alert("Skopiowano do schowka!"));
+    }
+
+    function saveList() {
+      generateList();
+      const blob = new Blob([outputList.value], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "fra_lista_kart.txt";
+      link.click();
+    }
+
+    function clearSelections() {
+      if (!confirm("Na pewno chcesz usunąć zaznaczenia z listy FRA + FRC?")) return;
+      allGuideCards.forEach(card => localStorage.removeItem(cardId(card)));
+      outputList.value = "";
+      displayGallery();
+    }
+
+    function selectAllVisible() {
+      visibleCards().forEach(card => {
+        const checkbox = card.querySelector("input[type='checkbox']");
+        const qty = card.querySelector("input[type='number']");
+        checkbox.checked = true;
+        qty.value = Math.max(1, Math.floor(Number(qty.value) || 1));
+        updateStorage(card.dataset.id, true, qty.value);
+      });
+    }
+  </script>
+</body>
+</html>
